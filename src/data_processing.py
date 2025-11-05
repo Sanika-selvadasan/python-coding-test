@@ -1,9 +1,9 @@
 import csv
 import pandas as pd
 
-filepath = r'C:\Users\LENOVO\Downloads\python-coding-test\data\sales_data.csv'
+# filepath = r'C:\Users\LENOVO\Downloads\python-coding-test\data\sales_data.csv'
 
-def process_sales_df(file_path):
+def process_sales_df(filepath):
     """
     Reads sales CSV and computes:
       - Total revenue per region
