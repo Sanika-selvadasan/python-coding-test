@@ -1,6 +1,9 @@
 import csv
+import pandas as pd
 
-def process_sales_data(file_path):
+filepath = r'C:\Users\LENOVO\Downloads\python-coding-test\data\sales_data.csv'
+
+def process_sales_df(file_path):
     """
     Reads sales CSV and computes:
       - Total revenue per region
@@ -9,45 +12,27 @@ def process_sales_data(file_path):
     Returns formatted string output.
     """
 
-    region_revenue = {}
-    product_sales = {}
-    total_value = 0
-    total_orders = 0
+    df = pd.read_csv(filepath) # Load csv
+    df['revenue'] = df['quantity'] * df['price'] # Compute reveneue
+    region_revenue = df.groupby('region')['revenue'].sum().to_dict() # Total revenue per region
+    product_sales = df.groupby('product')['quantity'].sum()
+    product_sales   
+    top_product = product_sales.idxmax()
+    top_quantity = product_sales.max()
+    avg_order_value = df['revenue'].mean()
+    output_lines = ['Revenue by region: ']
 
-    # Read CSV and aggregate
-    with open(file_path, newline='', encoding='utf-8') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            order_id = row['order_id']
-            product = row['product']
-            quantity = int(row['quantity'])
-            price = float(row['price'])
-            region = row['region']
-
-            # Revenue for region
-            region_revenue[region] = region_revenue.get(region, 0) + (quantity * price)
-
-            # Product sales count
-            product_sales[product] = product_sales.get(product, 0) + quantity
-
-            # Totals for avg order value
-            total_value += (quantity * price)
-            total_orders += 1
-
-    # Compute metrics
-    top_product = max(product_sales.items(), key=lambda x: x[1])
-    avg_order_value = total_value / total_orders if total_orders > 0 else 0
-
-    # Build output
-    output_lines = ["Revenue by region:"]
     for region, revenue in region_revenue.items():
-        output_lines.append(f"{region}: ₹{int(revenue):,}")
+        output_lines.append(f'{region}: {int(revenue):,}')
 
-    output_lines.append("")
-    output_lines.append(f"Top-selling product: {top_product[0]} ({top_product[1]} units)")
-    output_lines.append(f"Average order value: ₹{int(avg_order_value):,}")
+    output_lines.append(f'Top-selling product: {top_product} ({top_quantity} units)')
+    output_lines.append(f'Average order value: {int(avg_order_value)}')
 
-    return "\n".join(output_lines)
+    return '\n'.join(output_lines)
+
+
+
+
 
 
 
@@ -81,7 +66,7 @@ def process_sales_data(file_path):
 
 # import csv
 
-# def process_sales_data(file_path):
+# def process_sales_df(file_path):
 #     """
 #     TODO:
 #     1. Read the CSV file
